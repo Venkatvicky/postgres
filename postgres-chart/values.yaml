@@ -8,7 +8,11 @@ image:
 service:
   name: postgres
   type: ClusterIP
-  port: 5432
+  port: 5432 
+  
+  serviceAccount:
+  create: true
+  name: ""
 
 storage:
   size: 5Gi
