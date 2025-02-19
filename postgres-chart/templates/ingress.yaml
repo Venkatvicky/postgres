@@ -1,43 +1,28 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "postgres-chart.fullname" . }}
-  labels:
-    {{- include "postgres-chart.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  name: {{ .Release.Name }}-ingress
+  namespace: postgres
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  {{- with .Values.ingress.className }}
-  ingressClassName: {{ . }}
-  {{- end }}
-  {{- if .Values.ingress.tls }}
-  tls:
-    {{- range .Values.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
+    {{- if .Values.ingress.annotations }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
     {{- end }}
-  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className | default "nginx" }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ .host }}
       http:
         paths:
           {{- range .paths }}
           - path: {{ .path }}
-            {{- with .pathType }}
-            pathType: {{ . }}
-            {{- end }}
+            pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ include "postgres-chart.fullname" $ }}
+                name: {{ $.Release.Name }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: 5432
           {{- end }}
     {{- end }}
 {{- end }}
