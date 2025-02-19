@@ -20,3 +20,14 @@ storage:
 postgresUser: vault
 postgresPassword: vaultpassword
 postgresDatabase: vaultdb
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: postgres.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
