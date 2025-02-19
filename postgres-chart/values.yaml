@@ -10,9 +10,9 @@ service:
   type: ClusterIP
   port: 5432 
   
-  serviceAccount:
+serviceAccount:
   create: true
-  name: ""
+  name: "vault"
 
 storage:
   size: 5Gi
